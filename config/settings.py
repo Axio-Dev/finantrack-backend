@@ -47,6 +47,7 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     "categories",
+    "common",
     "credit_cards",
     "subscriptions",
     "transactions",
