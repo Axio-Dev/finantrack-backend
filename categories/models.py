@@ -16,5 +16,5 @@ class Category(BaseModel):
         null=True,
     )
 
-    title = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150, unique=True)
     movement_type = models.CharField(max_length=20, choices=MovementType.choices)
