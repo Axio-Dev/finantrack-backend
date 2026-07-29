@@ -28,10 +28,12 @@ def category_deactivate(*, category_id: str, user) -> Category:
         category = Category.objects.select_for_update().get(id=category_id)
 
         if user is None:
-            raise PermissionDenied("Authentication is required")
+            raise PermissionDenied(
+                "You need to be authenticated to perform this action"
+            )
 
         if category.user is None and not user.is_staff:
-            raise PermissionDenied("Global categories cannot be deleted by users.")
+            raise PermissionDenied("Global categories cannot be deleted by users")
 
         if category.user is not None and category.user != user and not user.is_staff:
             raise PermissionDenied(
@@ -45,7 +47,7 @@ def category_deactivate(*, category_id: str, user) -> Category:
             raise ValidationError(
                 {
                     "category": (
-                        "This category cannot be deleted because it has transactions."
+                        "This category cannot be deleted because it has transactions"
                     )
                 }
             )

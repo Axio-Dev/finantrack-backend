@@ -21,7 +21,7 @@ class TestCategoryDeactivate:
         with pytest.raises(PermissionDenied) as error:
             category_deactivate(category_id=self.global_category.id, user=None)
 
-        assert "Authentication is required" in str(error.value)
+        assert "You need to be authenticated to perform this action" in str(error.value)
 
         category.refresh_from_db()
 
@@ -54,7 +54,7 @@ class TestCategoryDeactivate:
         with pytest.raises(PermissionDenied) as error:
             category_deactivate(category_id=category.id, user=self.user)
 
-        assert "Global categories cannot be deleted by users." in str(error.value)
+        assert "Global categories cannot be deleted by users" in str(error.value)
 
         category.refresh_from_db()
 
