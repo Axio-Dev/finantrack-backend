@@ -14,6 +14,9 @@ services:
     env_file:
       - .env
 
+    environment:
+      RUNNING_IN_DOCKER: "true"
+
     volumes:
       - .:/app
 

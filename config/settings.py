@@ -92,13 +92,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+db_host = env("DB_HOST")
+running_in_docker = env.bool("RUNNING_IN_DOCKER", default=False) or Path(
+    "/.dockerenv"
+).exists()
+
+if db_host == "db" and not running_in_docker:
+    db_host = "localhost"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": env("DB_NAME"),
         "USER": env("DB_USER"),
         "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
+        "HOST": db_host,
         "PORT": env("DB_PORT"),
     }
 }
@@ -143,4 +151,4 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 # Cors config
-CORS_ALLOWED_HOSTS = ["http://localhost:5173"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
