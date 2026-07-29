@@ -16,6 +16,9 @@ def category_deactivate(*, category_id: str, user) -> Category:
         ValidationError: If the category is global, already inactive,
         has transactions, or has subscriptions.
         Category.DoesNotExist: If the category does not exist.
+        PermissionDenied: If the User is None (not authtenticated),
+        is not staff, is no the owner of the category (we're not
+        allowing the creation of categories so far)
 
     Returns:
         Category: The deactivated category.
