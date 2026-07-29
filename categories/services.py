@@ -27,13 +27,16 @@ def category_deactivate(*, category_id: str, user) -> Category:
         if user is None:
             raise PermissionDenied("Authentication is required")
 
+        if category.user is None and not user.is_staff:
+            raise PermissionDenied("Global categories cannot be deleted by users.")
+
+        if category.user is not None and category.user != user and not user.is_staff:
+            raise PermissionDenied(
+                "You don't have the permissions to delete this category"
+            )
+
         if not category.is_active:
             raise ValidationError({"category": "Category is already inactive"})
-
-        if category.user is None and not user.is_staff:
-            raise ValidationError(
-                {"category": "Global categories cannot be deleted by users."}
-            )
 
         if category.transactions.exists():
             raise ValidationError(
