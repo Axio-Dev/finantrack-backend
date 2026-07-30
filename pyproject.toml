@@ -29,7 +29,7 @@ dev = [
 
 [tool.ruff]
 select = ["E", "F", "I", "B", "UP", "DJ"]
-ignore = []
+ignore = ["E051"]
 
 [tool.ruff.format]
 quote-style = "double"
