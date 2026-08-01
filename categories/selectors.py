@@ -8,6 +8,7 @@ def get_category_by_movement_type(*, category_id: str, movement_type: str) -> Ca
     category = Category.objects.filter(
         id=category_id,
         movement_type=movement_type,
+        user__isnull=True,
     ).first()
 
     if category is None:
