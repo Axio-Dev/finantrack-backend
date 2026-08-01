@@ -35,8 +35,9 @@ def create_transaction(
         description: Optional transaction description.
         amoutn: Positive transaction amount.
         movement_type: Either income or expense.
-        paymente_method: Payment method used for the transaction.
+        payment_method: Payment method used for the transaction.
         user: User that owns the transaction.
+        transaction_date: Date when the transaction were performed
         category_id: Selected category ID.
         credit_card_id: Optional credit card ID for credit payments.
         subscription_id: Optional subscription ID when transaction come from a subscription.
@@ -171,6 +172,26 @@ def update_transaction(
     category_id: str | None = None,
     transaction_date: date | None = None,
 ) -> Transaction:
+    """
+    Updates a Transaction for the given user
+
+    Args:
+        user: The current user that comes from request.user from the API.
+        transaction_id: The transaction ID that will be updated.
+        name: Transaction display name.
+        description: Transaction description.
+        amount: Positive transaction amount.
+        category_id: Selected category ID
+        transaction_date: Date when the transaction were performed
+
+    Raises:
+        PermissionDenied: When the user is None, attempts to update a Transaction
+        that the user don't owns.
+        ValidationError: When the transaction is not active.
+
+    Returns:
+        The updated Transaction.
+    """
 
     if user is None:
         raise PermissionDenied("You need to be authenticated to perform this action")
