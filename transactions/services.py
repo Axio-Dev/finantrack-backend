@@ -93,7 +93,7 @@ def calculate_current_balance(*, user) -> DecimalField:
     Returns:
         balance: The new current balance.
     """
-    return Transaction.objects.filter(user=user).aggregate(
+    return Transaction.objects.filter(user=user, is_active=True).aggregate(
         balance=Coalesce(
             Sum(
                 Case(
@@ -157,5 +157,57 @@ def deactivate_transaction(*, user, transaction_id: str) -> Transaction:
         # Transactions are soft deleted to perserve the historical transactions data.
         selected_transaction.is_active = False
         selected_transaction.save(update_fields=["is_active", "updated_at"])
+
+        return selected_transaction
+
+
+def update_transaction(
+    *,
+    user,
+    transaction_id: str,
+    name: str | None = None,
+    description: str | None = None,
+    amount: Decimal | None = None,
+    category_id: str | None = None,
+    transaction_date: date | None = None,
+) -> Transaction:
+
+    if user is None:
+        raise PermissionDenied("You need to be authenticated to perform this action")
+
+    with transaction.atomic():
+        selected_transaction = Transaction.objects.select_for_update().get(
+            id=transaction_id
+        )
+
+        if selected_transaction.user_id != user.id:
+            raise PermissionDenied("You cannot update other user's transactions")
+
+        if not selected_transaction.is_active:
+            raise ValidationError(
+                {"transaction": "Inactive transactions cannot be updated"}
+            )
+
+        if name is not None:
+            selected_transaction.name = name
+
+        if description is not None:
+            selected_transaction.description = description
+
+        if amount is not None:
+            selected_transaction.amount = amount
+
+        if category_id is not None:
+            category = get_category_by_movement_type(
+                category_id=category_id,
+                movement_type=selected_transaction.movement_type,
+            )
+            selected_transaction.category = category
+
+        if transaction_date is not None:
+            selected_transaction.transaction_date = transaction_date
+
+        selected_transaction.full_clean()
+        selected_transaction.save()
 
         return selected_transaction
