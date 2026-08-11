@@ -55,7 +55,7 @@ def create_transaction(
     )
 
     with transaction.atomic():
-        transaction_obj = Transaction.objects.create(
+        transaction_obj = Transaction(
             user=user,
             name=name,
             description=description,
