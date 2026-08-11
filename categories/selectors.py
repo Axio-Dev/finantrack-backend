@@ -9,6 +9,7 @@ def get_category_by_movement_type(*, category_id: str, movement_type: str) -> Ca
         id=category_id,
         movement_type=movement_type,
         user__isnull=True,
+        is_active=True,
     ).first()
 
     if category is None:
