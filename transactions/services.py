@@ -1,10 +1,11 @@
 from datetime import date
 from decimal import Decimal
 
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 
 from categories.selectors import get_category_by_movement_type
+from common.choices import PaymentMethod
 from transactions.models import Transaction
 
 
@@ -67,6 +68,13 @@ def create_transaction(
             subscription_id=subscription_id,
             payment_method=payment_method,
         )
+
+        if payment_method != PaymentMethod.CREDIT and credit_card_id is not None:
+            raise ValidationError(
+                {
+                    "credit_card": "Credit card can only be used when payment methos is credit"
+                }
+            )
 
         # Calls the model validations
         transaction_obj.full_clean()

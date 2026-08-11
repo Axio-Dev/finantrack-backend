@@ -204,3 +204,25 @@ class TestCreateTransaction:
         assert error.value.message_dict == {
             "credit_card": ["Credit card is required when payment method is credit."]
         }
+
+    def test_create_cash_transaction_with_credit_card_associated_raises_validation_error(
+        self, make_transaction_data
+    ):
+
+        related_credit_card = credit_card(user=self.user)
+
+        data = make_transaction_data(
+            user=self.user,
+            category_id=self.category.id,
+            payment_method=PaymentMethod.CASH,
+            credit_card_id=related_credit_card.id,
+        )
+
+        with pytest.raises(ValidationError) as error:
+            create_transaction(**data)
+
+        assert error.value.message_dict == {
+            "credit_card": [
+                "Credit card can only be used when payment methos is credit"
+            ]
+        }
