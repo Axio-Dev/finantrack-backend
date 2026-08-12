@@ -104,9 +104,8 @@ def delete_transaction(*, user, transaction_id: str) -> Transaction:
     if user is None or not user.is_authenticated:
         raise PermissionDenied("You need to be authenticated to perform this action.")
 
-    transaction_obj = get_transaction(user=user, transaction_id=transaction_id)
-
     with transaction.atomic():
+        transaction_obj = get_transaction(user=user, transaction_id=transaction_id)
         transaction_obj.is_active = False
 
         transaction_obj.save()
