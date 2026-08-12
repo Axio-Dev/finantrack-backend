@@ -20,6 +20,7 @@
 
 ## Code Review Rules
 
+- Los reviews se deben postear en Español México.
 - Antes de revisar un PR, lee la descripción del PR y úsala como fuente principal para entender objetivo, alcance, decisiones esperadas y criterios de aceptación.
 - Si no puedes acceder a la descripción del PR, dilo explícitamente al inicio de la revisión y pide que se pegue el texto o resume la revisión solo con el diff disponible.
 - Evalúa si los cambios cumplen con la arquitectura del proyecto: Django + Django REST Framework, monolito modular y Service Layer.
