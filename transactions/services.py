@@ -88,14 +88,14 @@ def create_transaction(
 
 def delete_transaction(*, user, transaction_id: str) -> Transaction:
     """
-    Sof-deletes a transaction by marking it as inactive.
+    Soft-deletes a transaction by marking it as inactive.
 
     Args:
         user: User that is requesting the deactivation.
         transaction_id: ID of the transaction that will be deactivated.
 
     Raises:
-        ValidationError: If user is not authenticated.
+        PermissionDenied: If user is not authenticated.
 
     Returns:
         Transaction: The deactivated transaction.
