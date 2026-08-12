@@ -7,6 +7,7 @@ from django.db import transaction
 from categories.selectors import get_category_by_movement_type
 from common.choices import PaymentMethod
 from transactions.models import Transaction
+from transactions.selectors import get_transaction
 
 
 def create_transaction(
@@ -80,6 +81,34 @@ def create_transaction(
         transaction_obj.full_clean()
 
         # If the validation were successful, save the transaction in DB
+        transaction_obj.save()
+
+    return transaction_obj
+
+
+def delete_transaction(*, user, transaction_id: str) -> Transaction:
+    """
+    Sof-deletes a transaction by marking it as inactive.
+
+    Args:
+        user: User that is requesting the deactivation.
+        transaction_id: ID of the transaction that will be deactivated.
+
+    Raises:
+        ValidationError: If user is not authenticated.
+
+    Returns:
+        Transaction: The deactivated transaction.
+    """
+
+    if user is None or not user.is_authenticated:
+        raise PermissionDenied("You need to be authenticated to perform this action.")
+
+    transaction_obj = get_transaction(user=user, transaction_id=transaction_id)
+
+    with transaction.atomic():
+        transaction_obj.is_active = False
+
         transaction_obj.save()
 
     return transaction_obj
