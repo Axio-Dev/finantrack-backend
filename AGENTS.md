@@ -20,9 +20,14 @@
 
 ## Code Review Rules
 
-- Los reviews se deben postear en Español México.
+- Escribe todos los hallazgos de code review en español.
 - Antes de revisar un PR, lee la descripción del PR y úsala como fuente principal para entender objetivo, alcance, decisiones esperadas y criterios de aceptación.
 - Si no puedes acceder a la descripción del PR, dilo explícitamente al inicio de la revisión y pide que se pegue el texto o resume la revisión solo con el diff disponible.
 - Evalúa si los cambios cumplen con la arquitectura del proyecto: Django + Django REST Framework, monolito modular y Service Layer.
 - Mantén la lógica de negocio en servicios; evita mover reglas de negocio a views, serializers, signals o modelos salvo que ya sea un patrón existente.
 - Prioriza hallazgos de bugs, regresiones, seguridad, integridad de datos, permisos, transacciones y contratos API. No marques preferencias de estilo si ya las cubre lint/format.
+
+## Language
+- Responde siempre en español.
+- Cuando publiques code reviews en GitHub, escribe el cuerpo del review, summaries y comentarios inline en español.
+- Mantén nombres de archivos, símbolos, errores, APIs y snippets de código en su idioma original.
