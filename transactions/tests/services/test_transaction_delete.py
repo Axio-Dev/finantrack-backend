@@ -56,5 +56,5 @@ class TestDeleteTransaction:
             )
 
         assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive"]
+            "transaction": ["Selected transaction does not exist or is inactive."]
         }
