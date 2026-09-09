@@ -111,3 +111,55 @@ def delete_transaction(*, user, transaction_id: str) -> Transaction:
         transaction_obj.save()
 
     return transaction_obj
+
+
+def update_transaction(*, user, transaction_id: str, data: dict) -> Transaction:
+    """
+    Partially updates a transaction.
+
+    Args:
+        user: User that is requesting the update.
+        transaction_id: the transaction that will be updated.
+        data: validated data from serializer.
+
+    Raises:
+        PermissionDenied: if the user is not authenticated.
+
+    Returns:
+        transaction: The updated transaction.
+    """
+
+    allowed_fields = ("name", "description", "amount", "transaction_date")
+
+    if user is None or not user.is_authenticated:
+        raise PermissionDenied("You need to be authenticated to perform this action.")
+
+    with transaction.atomic():
+        transaction_obj = get_transaction(user=user, transaction_id=transaction_id)
+
+        if transaction_obj.subscription_id is not None:
+            raise ValidationError(
+                {
+                    "transaction": "This transaction cannot be updated because it is linked to a subscription."
+                }
+            )
+
+        update_fields = []
+
+        for field in allowed_fields:
+            if field in data:
+                setattr(transaction_obj, field, data[field])
+                update_fields.append(field)
+
+        if "category_id" in data:
+            category = get_category_by_movement_type(
+                category_id=data["category_id"],
+                movement_type=transaction_obj.movement_type,
+            )
+            transaction_obj.category = (category,)
+            update_fields.append("category")
+
+        transaction_obj.full_clean()
+        transaction_obj.save()
+
+    return transaction_obj
