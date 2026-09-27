@@ -156,7 +156,7 @@ def update_transaction(*, user, transaction_id: str, data: dict) -> Transaction:
                 category_id=data["category_id"],
                 movement_type=transaction_obj.movement_type,
             )
-            transaction_obj.category = (category,)
+            transaction_obj.category = category
             update_fields.append("category")
 
         transaction_obj.full_clean()
