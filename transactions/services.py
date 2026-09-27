@@ -129,7 +129,12 @@ def update_transaction(*, user, transaction_id: str, data: dict) -> Transaction:
         transaction: The updated transaction.
     """
 
-    allowed_fields = ("name", "description", "amount", "transaction_date", "category")
+    allowed_fields = (
+        "name",
+        "description",
+        "amount",
+        "transaction_date",
+    )
 
     if user is None or not user.is_authenticated:
         raise PermissionDenied("You need to be authenticated to perform this action.")
@@ -151,6 +156,7 @@ def update_transaction(*, user, transaction_id: str, data: dict) -> Transaction:
                 setattr(transaction_obj, field, data[field])
                 update_fields.append(field)
 
+        # Category updates must go through the selector to preserve movement type
         if "category_id" in data:
             category = get_category_by_movement_type(
                 category_id=data["category_id"],
