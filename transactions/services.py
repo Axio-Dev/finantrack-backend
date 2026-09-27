@@ -129,7 +129,7 @@ def update_transaction(*, user, transaction_id: str, data: dict) -> Transaction:
         transaction: The updated transaction.
     """
 
-    allowed_fields = ("name", "description", "amount", "transaction_date")
+    allowed_fields = ("name", "description", "amount", "transaction_date", "category")
 
     if user is None or not user.is_authenticated:
         raise PermissionDenied("You need to be authenticated to perform this action.")
