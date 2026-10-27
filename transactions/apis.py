@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,7 +8,8 @@ from transactions.selectors import get_transaction, list_transactions
 
 
 class TransactionDetailApi(APIView):
-    permission_classes = (IsAuthenticated,)
+    # TODO: Hacer que las apis sean IsAuthenticated
+    permission_classes = (AllowAny,)
 
     class OutputSerializer(serializers.Serializer):
         id = serializers.UUIDField()
@@ -24,7 +25,8 @@ class TransactionDetailApi(APIView):
 
 
 class TransactionListApi(APIView):
-    permission_classes = (IsAuthenticated,)
+    # TODO: Hacer que las apis sean IsAuthenticated
+    permission_classes = (AllowAny,)
 
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
