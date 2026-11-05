@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -26,7 +26,7 @@ class TransactionDetailApi(APIView):
 
 class TransactionListApi(APIView):
     # TODO: Hacer que las apis sean IsAuthenticated
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:

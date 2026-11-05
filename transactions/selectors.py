@@ -19,7 +19,4 @@ def get_transaction(*, transaction_id: str, user) -> Transaction:
 
 
 def list_transactions(*, user) -> QuerySet[Transaction]:
-    if not user.is_authenticated:
-        return Transaction.objects.none()
-
-    return Transaction.objects.filter(user=user)
+    return Transaction.objects.filter(user=user, is_active=True)
