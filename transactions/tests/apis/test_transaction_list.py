@@ -61,8 +61,10 @@ class TestTransactionListApi(APITestCase):
         self,
     ):
         response = self.client.get(self.url)
+        data = response.json()
 
         assert response.status_code == 403
+        assert data == {"detail": "Authentication credentials were not provided."}
 
     def test_transaction_list_excludes_other_users_transactions(
         self,
