@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.db.models import QuerySet
 
 from transactions.models import Transaction
 
@@ -15,3 +16,7 @@ def get_transaction(*, transaction_id: str, user) -> Transaction:
         )
 
     return transaction
+
+
+def list_transactions(*, user) -> QuerySet[Transaction]:
+    return Transaction.objects.filter(user=user, is_active=True)
