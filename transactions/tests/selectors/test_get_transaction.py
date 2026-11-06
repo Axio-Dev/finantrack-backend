@@ -21,7 +21,9 @@ class TestGetTransaction:
 
         assert valid_transaction == self.transaction
 
-    def test_non_existent_transaction_raises_validation_error(self):
+    def test_get_transaction_raises_validation_error_when_try_to_get_non_existent_transaction(
+        self,
+    ):
 
         with pytest.raises(ValidationError) as error:
             get_transaction(
@@ -32,7 +34,7 @@ class TestGetTransaction:
             "transaction": ["Selected transaction does not exist or is inactive."]
         }
 
-    def test_try_to_get_antoher_users_transaction_raises_permission_denied(self):
+    def test_get_transaction_raises_validation_error_when_owned_by_another_user(self):
         other_user = create_user(email="otheruser@test.com", password="otheruser123")
         other_transaction = transaction(user=other_user, category=self.category)
 
@@ -43,7 +45,9 @@ class TestGetTransaction:
             "transaction": ["Selected transaction does not exist or is inactive."]
         }
 
-    def test_try_to_get_inactive_transaction_raises_validation_error(self):
+    def test_get_transaction_raises_validation_error_when_try_to_get_deactive_transaction(
+        self,
+    ):
         self.transaction.is_active = False
         self.transaction.save(update_fields=["is_active"])
 
