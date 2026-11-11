@@ -18,3 +18,9 @@ class Category(BaseModel):
 
     name = models.CharField(max_length=150, unique=True)
     movement_type = models.CharField(max_length=20, choices=MovementType.choices)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "categories"
