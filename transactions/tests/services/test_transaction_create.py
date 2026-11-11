@@ -223,6 +223,6 @@ class TestCreateTransaction:
 
         assert error.value.message_dict == {
             "credit_card": [
-                "Credit card can only be used when payment methos is credit"
+                "A credit card can only be associated whtn the payment method is credit."
             ]
         }

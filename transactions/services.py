@@ -73,7 +73,7 @@ def create_transaction(
         if payment_method != PaymentMethod.CREDIT and credit_card_id is not None:
             raise ValidationError(
                 {
-                    "credit_card": "Credit card can only be used when payment methos is credit"
+                    "credit_card": "A credit card can only be associated whtn the payment method is credit."
                 }
             )
 
