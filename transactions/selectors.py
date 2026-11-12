@@ -1,6 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 
+from common.exceptions import ResourceNotFound
 from transactions.models import Transaction
 
 
@@ -11,9 +11,7 @@ def get_transaction(*, transaction_id: str, user) -> Transaction:
     ).first()
 
     if transaction is None:
-        raise ValidationError(
-            {"transaction": "Selected transaction does not exist or is inactive."}
-        )
+        raise ResourceNotFound("Transaction not found.")
 
     return transaction
 

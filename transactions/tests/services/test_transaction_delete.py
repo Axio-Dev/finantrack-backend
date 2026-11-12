@@ -1,8 +1,9 @@
 import pytest
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 
 from categories.factories import create_category
+from common.exceptions import ResourceNotFound
 from transactions.factories import transaction
 from transactions.services import delete_transaction
 from users.factories import create_user
@@ -38,7 +39,7 @@ class TestDeleteTransaction:
             str(error.value) == "You need to be authenticated to perform this action."
         )
 
-    def test_deactivated_transaction_raises_validation_error(self):
+    def test_deactivated_transaction_raises_resource_not_found(self):
         selected_transaction = self.transaction
 
         deactivated_transaction = delete_transaction(
@@ -49,12 +50,10 @@ class TestDeleteTransaction:
 
         assert deactivated_transaction.is_active is False
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             delete_transaction(
                 transaction_id=deactivated_transaction.id,
                 user=deactivated_transaction.user,
             )
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."

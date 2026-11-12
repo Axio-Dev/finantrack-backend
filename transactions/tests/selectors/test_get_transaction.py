@@ -1,7 +1,7 @@
 import pytest
-from django.core.exceptions import ValidationError
 
 from categories.factories import create_category
+from common.exceptions import ResourceNotFound
 from transactions.factories import transaction
 from transactions.selectors import get_transaction
 from users.factories import create_user
@@ -21,39 +21,33 @@ class TestGetTransaction:
 
         assert valid_transaction == self.transaction
 
-    def test_get_transaction_raises_validation_error_when_try_to_get_non_existent_transaction(
+    def test_get_transaction_raises_resource_not_found_when_try_to_get_non_existent_transaction(
         self,
     ):
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             get_transaction(
                 transaction_id="00000000-0000-0000-0000-000000000000", user=self.user
             )
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."
 
-    def test_get_transaction_raises_validation_error_when_owned_by_another_user(self):
+    def test_get_transaction_raises_resource_not_found_when_owned_by_another_user(self):
         other_user = create_user(email="otheruser@test.com", password="otheruser123")
         other_transaction = transaction(user=other_user, category=self.category)
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             get_transaction(transaction_id=other_transaction.id, user=self.user)
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."
 
-    def test_get_transaction_raises_validation_error_when_try_to_get_deactive_transaction(
+    def test_get_transaction_raises_resource_not_found_when_try_to_get_deactive_transaction(
         self,
     ):
         self.transaction.is_active = False
         self.transaction.save(update_fields=["is_active"])
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             get_transaction(transaction_id=self.transaction.id, user=self.user)
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."

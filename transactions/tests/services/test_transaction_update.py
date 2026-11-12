@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 
 from categories.factories import create_category
 from common.choices import MovementType, PaymentMethod
+from common.exceptions import ResourceNotFound
 from subscriptions.factories import subscription
 from transactions.factories import transaction
 from transactions.services import update_transaction
@@ -107,34 +108,30 @@ class TestUpdateTransaction:
             str(error.value) == "You need to be authenticated to perform this action."
         )
 
-    def test_inactive_transaction_raises_validation_error(self):
+    def test_inactive_transaction_raises_resource_not_found(self):
         self.transaction.is_active = False
         self.transaction.save(update_fields=["is_active"])
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             update_transaction(
                 user=self.user,
                 transaction_id=self.transaction.id,
                 data={"name": "Updated name"},
             )
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."
 
-    def test_transaction_from_another_user_raises_validation_error(self):
+    def test_transaction_from_another_user_raises_resource_not_found(self):
         another_user = create_user(email="anotheruser@test.com")
 
-        with pytest.raises(ValidationError) as error:
+        with pytest.raises(ResourceNotFound) as error:
             update_transaction(
                 user=another_user,
                 transaction_id=self.transaction.id,
                 data={"name": "Updated name"},
             )
 
-        assert error.value.message_dict == {
-            "transaction": ["Selected transaction does not exist or is inactive."]
-        }
+        assert str(error.value) == "Transaction not found."
 
     def test_subscription_transaction_raises_validation_error(self):
         related_subscription = subscription(
