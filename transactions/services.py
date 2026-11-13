@@ -56,6 +56,9 @@ def create_transaction(
         category_id=category_id, movement_type=movement_type
     )
 
+    if description is None:
+        description = ""
+
     with transaction.atomic():
         transaction_obj = Transaction(
             user=user,
